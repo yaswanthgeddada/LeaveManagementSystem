@@ -1,0 +1,31 @@
+::ng-deep .cdk-overlay-container{
+    z-index: 1200 !important;
+}
+
+#cardd{
+    margin: 8px !important;
+}
+
+#mattable {
+  width: 100%;
+  background-color: aliceblue;
+}
+
+#tabb{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom:5%;
+}
+
+#tabb1{
+    margin-top: 5%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom:5%;
+}
+
+#tabbul{
+    border: 1px solid;
+  padding: 10px;
+  box-shadow: 5px 10px 18px #888888;
+}

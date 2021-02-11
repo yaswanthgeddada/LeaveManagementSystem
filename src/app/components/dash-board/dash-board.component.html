@@ -1,0 +1,19 @@
+<div class="container justify-content-center ">
+    <div class="grid">
+        <mat-grid-list cols="2" rowHeight="4:1">
+            <mat-grid-tile class="border border-danger" routerLink='/profile' (click)="tokenForEmployee('employee')">My
+                Details
+            </mat-grid-tile>
+            <mat-grid-tile class="border border-danger" routerLink='/profile' (click)="tokenForEmployee('manager')">
+                Manager
+                Details</mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list cols="1" rowHeight="7:1">
+            <mat-grid-tile class="border border-danger" routerLink='/leave' (click)="tokenForEmployee('employee')">My
+                leave History</mat-grid-tile>
+            <mat-grid-tile class="border border-danger" routerLink='/leave' (click)="tokenForEmployee('manager')"
+                *ngIf="authService.managerLoggedIn()">
+                Employees Leaves</mat-grid-tile>
+        </mat-grid-list>
+    </div>
+</div>

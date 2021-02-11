@@ -1,0 +1,85 @@
+<!-- <p>dash-board works!</p> -->
+<!-- <div class="col-md-6">
+
+    <!-- <form class="form-inline">
+<div class="form-group">
+    <div class="input-group">
+        <input class="form-control" placeholder="yyyy-mm-dd" name="modelData" [(ngModel)]="modelData" ngbDatepicker
+            #d="ngbDatepicker" [minDate]="minDate" style="margin-top: 39px;">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" style="margin-top: 39px; margin-right: 10px"
+                (click)="d.toggle()" type="button">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+
+        </div>
+    </div>
+</div>
+ </form> -->
+
+
+
+<div class="container-md col-8 justify-content-center">
+
+    <div class="row">
+        <div class="col-sm-10" *ngIf="empProfile=='employee'">
+            <div class="card border-info">
+                <div class="card-header  border-info " style="background-color:black;color:white;">
+                    <h5> Employee Details </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm">
+                            <mat-card>
+                                <div *ngIf="spinner" class="spinner-border" role="status"></div>
+                                <img src={{employee.empImageUrl}} alt="Employee photo loading" width="300" height="400">
+                            </mat-card>
+                        </div>
+                        <div class="col-sm" style="margin-top:50px">
+                            <div *ngIf="spinner" class="spinner-border" role="status"></div>
+                            <h1 class="card-title" style="font-size:30px">Name : {{employee.empName}}</h1>
+                            <p class="card-title" style="font-size:20px">empId : {{employee.empId}}</p>
+                            <p class="card-text" style="font-size:20px">Email : {{employee.empMail}}</p>
+                            <p class="card-text" style="font-size:20px">Contact : {{employee.empPhone}}</p>
+                            <p class="card-text" style="font-size:20px">Role : {{employee.empRole}}</p>
+                            <p class="card-text" style="font-size:20px">JoinDate : {{employee.empJoinDate}}</p>
+                            <p class="card-text" style="font-size:20px">Availabe Leaves : {{employee.empLeaveCount}}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-12" *ngIf="empProfile=='manager'">
+            <div class="card border-info">
+                <div class="card-header border-info" style="background-color:black;color:white;">
+                    <h5> Manager Details </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm">
+                            <mat-card>
+                                <mat-spinner *ngIf="spinner"></mat-spinner>
+                                <img src={{manager.empImageUrl}} alt="Employee photo loading" width="300" height="400">
+                            </mat-card>
+                        </div>
+                        <div class="col-sm" style="margin-top:50px">
+                            <h1 class="card-title" style="font-size:30px">{{manager.empName}}</h1>
+                            <p class="card-title" style="font-size:20px">Employee Id &nbsp;&nbsp; : {{manager.empId}}
+                            </p>
+                            <p class="card-text" style="font-size:20px">Email : {{manager.empMail}}</p>
+                            <p class="card-text" style="font-size:20px">Contact : {{manager.empPhone}}</p>
+                            <p class="card-text" style="font-size:20px">Role : {{manager.empRole}}</p>
+                            <p class="card-text" style="font-size:20px">JoinDate : {{manager.empJoinDate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

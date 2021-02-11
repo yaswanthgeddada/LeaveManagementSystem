@@ -1,0 +1,17 @@
+#proPic{
+    padding:10px;
+    padding-right:0px;
+
+
+}
+
+.mat-card {
+    transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+    display: block;
+    position: relative;
+    margin-right: 39px !important;
+    padding: 16px;
+    /* padding-right: 57px; */
+    border-radius: 4px;
+    background-color:lightyellow;
+}

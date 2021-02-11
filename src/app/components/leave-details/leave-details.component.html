@@ -1,0 +1,411 @@
+<div class="container justify-content-center">
+
+    <!-- Apply Leave Form -->
+    <div>
+        <!-- Button trigger modal -->
+
+        <div class="row">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                Apply for Leave
+            </button>
+            <!-- <mat-spinner class="col-sm-2"></mat-spinner> -->
+            &nbsp;&nbsp;&nbsp;
+            <div *ngIf="spinner" class="spinner-border" role="status"> </div>
+
+        </div>
+
+
+
+
+        <!-- Modal for applying the leave -->
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Apply for Leave</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form #fom="ngForm">
+                        <span style="color: cornflowerblue">&nbsp;&nbsp;&nbsp;click on calender Icon to pick
+                            date</span>
+                        <div class="form-group" [class.has-error]="startDate1.invalid && startDate1.touched"
+                            [class.has-success]="startDate1.valid">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Start Date</mat-label>
+                                <input matInput [matDatepicker]="picker" [matDatepickerFilter]="myFilter"
+                                    [min]="minDate" name="startDate" [(ngModel)]="startDate" disabled required
+                                    #startDate1="ngModel">
+                                <mat-datepicker-toggle matSuffix [for]="picker" style="color:blueviolet;">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                                <span class="help-block" *ngIf="startDate1.invalid && startDate1.touched">
+                                    Start Date is required</span>
+                            </mat-form-field>
+                        </div>
+                        <mat-form-field appearance="fill">
+                            <mat-label>End Date</mat-label>
+                            <input matInput [matDatepicker]="picker1" [matDatepickerFilter]="myFilter" [min]="startDate"
+                                name="endDate" [(ngModel)]="endDate" disabled required>
+                            <mat-datepicker-toggle matSuffix [for]="picker1" style="color:blueviolet;">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                        </mat-form-field>
+
+
+
+                        <div class="modal-body">
+
+
+
+                            <div class="form-group" [class.has-error]="leaveType1.invalid && leaveType1.touched">
+                                <label for="exampleFormControlSelect1" class="control-label">Select the
+                                    leaveType</label>
+                                <select class="form-control" id="exampleFormControlSelect1" name="leaveType"
+                                    [(ngModel)]="leaveType" #leaveType1="ngModel" required class="form-control">
+                                    <option>Earned leave</option>
+                                    <option>Sick leave</option>
+                                    <option>Maternity Leave</option>
+                                </select>
+                                <span class="help-block" style="color: red"
+                                    *ngIf="leaveType1.invalid && leaveType1.touched">Please select
+                                    the type</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Reason</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="reason"
+                                    [(ngModel)]="reason"></textarea>
+                            </div>
+
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="fom.invalid"
+                                (click)=applyLeave()>Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- pending leaves of all employee under the manager manager can see this table -->
+    <mat-tab-group mat-align-tabs="start" *ngIf="authService.employeeLoggedIn && empProfile=='employee'">
+
+
+        <mat-tab label="My pending Leaves" *ngIf="empProfile=='employee'">
+            <mat-form-field>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+            </mat-form-field>
+
+            <div class="mat-elevation-z8 " id="tabb">
+                <table mat-table id="mattable" [dataSource]="pendingLeaves">
+                    <!--- Note that these columns can be defined in any order.
+                                                    The actual rendered columns are set as a property on the row definition" -->
+
+                    <ng-container matColumnDef="leaveId">
+                        <th mat-header-cell *matHeaderCellDef> Application Id </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.leaveId}} </td>
+                    </ng-container>
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="empId">
+                        <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.empId}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="startDate">
+                        <th mat-header-cell *matHeaderCellDef> Start Date </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.startDate}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="endDate">
+                        <th mat-header-cell *matHeaderCellDef> End Date </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.endDate}} </td>
+                    </ng-container>
+
+                    <!-- Symbol Column -->
+                    <ng-container matColumnDef="appliedOn">
+                        <th mat-header-cell *matHeaderCellDef> Applied On </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.appliedOn}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reason">
+                        <th mat-header-cell *matHeaderCellDef> Reason </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.reason}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let leave"> {{leave.status}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                </table>
+                <!-- <mat-paginator #myPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+
+            </div>
+
+        </mat-tab>
+        <mat-tab label="My Leaves History">
+
+            <div class="container">
+
+                <div *ngIf="empProfile=='employee'">
+                    &nbsp;
+                    <!-- <table class="table table-sm table-bordered table-hover">
+                        <thead>
+                            <tr class="table-info">
+                                <th>#</th>
+                                <th>employee_Id</th>
+                                <th>Applied_On</th>
+                                <th>StartDate</th>
+                                <th>EndDate</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let leave of leaveHistory; let index = index">
+                                <td>{{index+1}}</td>
+                                <td>{{leave.empId}}</td>
+                                <td>{{leave.appliedOn}}</td>
+                                <td>{{leave.startDate}}</td>
+                                <td>{{leave.endDate}}</td>
+                                <td>{{leave.reason}}</td>
+                                <td>{{leave.status}}</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+
+                    <div class="mat-elevation-z8 " id="tabb">
+                        <table mat-table id="mattable" [dataSource]="leaveHistory">
+                            <!--- Note that these columns can be defined in any order.
+                                                                        The actual rendered columns are set as a property on the row definition" -->
+
+                            <ng-container matColumnDef="leaveId">
+                                <th mat-header-cell *matHeaderCellDef> Application Id </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.leaveId}} </td>
+                            </ng-container>
+                            <!-- Position Column -->
+                            <ng-container matColumnDef="empId">
+                                <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.empId}} </td>
+                            </ng-container>
+
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="startDate">
+                                <th mat-header-cell *matHeaderCellDef> Start Date </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.startDate}} </td>
+                            </ng-container>
+
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="endDate">
+                                <th mat-header-cell *matHeaderCellDef> End Date </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.endDate}} </td>
+                            </ng-container>
+
+                            <!-- Symbol Column -->
+                            <ng-container matColumnDef="appliedOn">
+                                <th mat-header-cell *matHeaderCellDef> Applied On </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.appliedOn}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="reason">
+                                <th mat-header-cell *matHeaderCellDef> Reason </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.reason}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef> Status </th>
+                                <td mat-cell *matCellDef="let leave"> {{leave.status}} </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                        </table>
+                        <!-- <mat-paginator #myPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                        </mat-paginator> -->
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </mat-tab>
+
+
+
+    </mat-tab-group>
+
+    <!-- history of employee leaves -->
+    <mat-tab-group mat-align-tabs="start" *ngIf="authService.managerLoggedIn() && empProfile=='manager'">
+
+        <mat-tab label="Employee Pending Leaves" *ngIf="authService.managerLoggedIn() && empProfile=='manager'">
+            <div *ngIf="authService.managerLoggedIn() && empProfile=='manager'">
+                <div class="container">
+                    <div>
+                        &nbsp;
+                        <form>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Search</mat-label>
+
+                                <input type="tel" matInput placeholder="EmpID or Name" name="searchInput"
+                                    [(ngModel)]="searchInput">
+                                <mat-icon matSuffix>search</mat-icon>
+
+                            </mat-form-field>
+                        </form>
+                        <table class="table table-bordered table-hover" id="tabbul">
+                            <thead>
+                                <tr class="table-info">
+                                    <th>#</th>
+                                    <th>employee_Id</th>
+                                    <th>Applied_On</th>
+                                    <th>StartDate</th>
+                                    <th>EndDate</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>full view</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let empLeave of managerEmployee | leaveFilter:searchInput ; let index = index">
+                                    <td>{{index+1}}</td>
+                                    <td>{{empLeave.empId}}</td>
+                                    <td>{{empLeave.appliedOn}}</td>
+                                    <td>{{empLeave.startDate}}</td>
+                                    <td>{{empLeave.endDate}}</td>
+                                    <td>{{empLeave.reason}}</td>
+                                    <td>{{empLeave.status}}</td>
+                                    <td>
+                                        <button type="button" data-toggle="modal" mat-icon-button
+                                            data-target="#staticBackdrop1"
+                                            (click)="openDialog(empLeave.leaveId,empLeave.reason,empLeave.appliedOn)">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button mat-stroked-button color="primary"
+                                            (click)="approveLeave(empLeave.leaveId)">Approve</button>&nbsp;
+                                        <button mat-stroked-button color="warn"
+                                            (click)="rejectLeave(empLeave.leaveId)">Reject</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </mat-tab>
+        <mat-tab label="My employees" *ngIf="authService.managerLoggedIn() && empProfile=='manager'">
+            <div class="mat-elevation-z8" id="tabb1">
+                <table mat-table id="mattable" [dataSource]="employees">
+                    <!--- Note that these columns can be defined in any order.
+                        The actual rendered columns are set as a property on the row definition" -->
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="empId">
+                        <th mat-header-cell *matHeaderCellDef> empId </th>
+                        <td mat-cell *matCellDef="let element"> {{element.empId}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="empName">
+                        <th mat-header-cell *matHeaderCellDef> empJoinDate </th>
+                        <td mat-cell *matCellDef="let element"> {{element.empName}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="empLeaveCount">
+                        <th mat-header-cell *matHeaderCellDef> empLeaveCount </th>
+                        <td mat-cell *matCellDef="let element"> {{element.empLeaveCount}} </td>
+                    </ng-container>
+
+                    <!-- Symbol Column -->
+                    <ng-container matColumnDef="empMail">
+                        <th mat-header-cell *matHeaderCellDef> empMail </th>
+                        <td mat-cell *matCellDef="let element"> {{element.empMail}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="empPhone">
+                        <th mat-header-cell *matHeaderCellDef> empPhone </th>
+                        <td mat-cell *matCellDef="let element"> {{element.empPhone}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                </table>
+
+            </div>
+        </mat-tab>
+
+
+    </mat-tab-group>
+
+    <!-- Modal for comments by manager -->
+    <div class="modal fade" id="staticBackdrop1" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title text-muted" id="staticBackdropLabel" style="margin-top:4px">Application
+                        Id :
+                        {{leavId}}</h6>&nbsp;
+
+                    <br />
+                    <hr>
+                    <p class="text-muted" style="margin-top:4px">appled on : {{appliedDate}}</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <mat-card id="cardd" class="text-muted">Reason : <i>{{reasonMd}}</i></mat-card>
+
+                <form #fom1="ngForm">
+
+                    <div class="modal-body" style="padding-right: 20px;">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Enter the comments </mat-label>
+                            <textarea matInput #com="ngModel" [(ngModel)]="comments" name="comments"></textarea>
+
+                        </mat-form-field>
+                        <mat-radio-group aria-label="Select an option" required [(ngModel)]="stat" name="stat"
+                            #status="ngModel">
+                            &nbsp;<mat-radio-button value="Approved">Approve
+                            </mat-radio-button>&nbsp;
+                            <mat-radio-button value="Rejected">Reject
+                            </mat-radio-button>
+                        </mat-radio-group>
+                        <span class="help-block" *ngIf="status.touched && status.invalid">
+                            Start Date is required</span>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" [disabled]="fom1.invalid" class="btn btn-primary" (click)="addComments()"
+                            data-dismiss="modal">submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

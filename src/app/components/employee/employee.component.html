@@ -1,0 +1,112 @@
+<div class="row">
+    <mat-spinner *ngIf="spinner"></mat-spinner>
+
+
+    <div class="container justify-content-center">
+        <mat-spinner *ngIf="spinner"></mat-spinner>
+
+        <div class="search">
+            <!-- <form class="example-form"> -->
+            <!-- <mat-form-field class="example-full-width"> -->
+            <!--  -->
+            <!--  (keyup)=search($event.target.value) -->
+            <form>
+                <mat-form-field class="example-full-width">
+                    <mat-label>Search</mat-label>
+
+                    <input type="tel" matInput placeholder="Enter your Name" name="searchInput"
+                        [(ngModel)]="searchInput">
+                    <mat-icon matSuffix>search</mat-icon>
+
+                </mat-form-field>
+            </form>
+
+            <!-- </form> -->
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table table-bordered table-hover">
+                <thead>
+                    <tr class="table-info">
+                        <th>#</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Manager ID</th>
+                        <th>Login</th>
+                    </tr>
+                </thead>
+                <tbody class="employees">
+                    <tr *ngFor="let employee of employees | employeeFilter:searchInput ; let index = index">
+                        <td>{{index+1}}</td>
+                        <td>
+                            <h5>{{employee.empId}}</h5>
+                        </td>
+                        <td>
+                            {{employee.empName}}
+
+                        </td>
+                        <td>
+                            {{employee.empMail}}
+                        </td>
+                        <td>
+                            {{employee.empPhone}}
+                        </td>
+                        <td>
+                            {{employee.manId}}
+                        </td>
+                        <td>
+                            <button mat-raised-button color="primary" data-toggle="modal" data-target="#exampleModal"
+                                (click)="singleEmp(employee.empId, employee.manId,employee.empRole)"
+                                *ngIf="!authService.loggedIn()">Login</button>
+
+                            <button mat-raised-button color="primary" data-toggle="modal" *ngIf="authService.loggedIn()"
+                                (click)="authService.logoutUser()">logout</button>
+
+
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+    <!-- (click)="singleEmp(employee.empId, employee.manId,employee.empMail)" -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Login form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">EmpId</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" value={{employeeId}} disabled>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword3"
+                                (click)='data-dismiss="modal"' (keyup)="enter($event)" [(ngModel)]='empPassword'
+                                name='empPassword'>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" #closebutton data-dismiss="modal">Close</button>
+                    <!-- routerLink="/dashboard" -->
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='empLogin()'>Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
